@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package addon into Blender-installable zip
+        run: |
+          mkdir -p staging/shape_key_folders
+          cp shape_key_folders.py staging/shape_key_folders/__init__.py
+          (cd staging && zip -r ../shape_key_folders.zip shape_key_folders/)
+          unzip -l shape_key_folders.zip
+
+      - name: Upload workflow artifact (manual runs only)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: shape_key_folders
+          path: shape_key_folders.zip
+
+      - name: Attach zip to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: shape_key_folders.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
