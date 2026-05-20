@@ -2,6 +2,10 @@
 
 Blender 5.1+ addon that adds a folder-tree view of shape keys above the native *Shape Keys* panel in Properties > Object Data.
 
+![Panel screenshot](docs/demo-1.png)
+
+![Workflow demo](docs/demo-2.gif)
+
 ## Features
 
 - Folder grouping by slash-prefixed names (`Expressions/Smile` → `Expressions/` folder)
