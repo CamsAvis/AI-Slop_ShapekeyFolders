@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main]
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       tag:
@@ -20,14 +20,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compute release tag
-        id: tag
+      - name: Determine release tag and type
+        id: meta
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "name=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+            tag="${{ github.event.inputs.tag }}"
+            prerelease=false
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            tag="${GITHUB_REF#refs/tags/}"
+            prerelease=false
           else
-            echo "name=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+            tag="latest-main"
+            prerelease=true
           fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+
+      - name: Delete previous rolling release (main pushes only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release delete latest-main --cleanup-tag --yes || true
 
       - name: Package addon into Blender-installable zip
         run: |
@@ -39,7 +52,8 @@ jobs:
       - name: Create release with zip attached
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.name }}
+          tag_name: ${{ steps.meta.outputs.tag }}
           files: shape_key_folders.zip
           generate_release_notes: true
           fail_on_unmatched_files: true
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
