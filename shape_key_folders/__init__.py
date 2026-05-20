@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Shapekeys **",
     "author": "CamsAvis",
-    "version": (2, 1, 0),
+    "version": (2, 1, 1),
     "blender": (5, 1, 0),
     "location": "Properties > Object Data > Shapekeys **",
     "description": (
@@ -178,6 +178,41 @@ class SHAPEKEYFOLDER_AP_prefs(AddonPreferences):
         soft_max=1000,
         max=5000,
         subtype='TIME',
+    )
+
+    # Required by the vendored CGCookie blender-addon-updater. Names and types
+    # are dictated by addon_updater_ops.update_settings_ui - do not rename.
+    auto_check_update: BoolProperty(
+        name="Auto-check for Update",
+        description="If enabled, auto-check for updates using set interval",
+        default=False,
+    )
+    updater_interval_months: IntProperty(
+        name="Months",
+        description="Number of months between checking for updates",
+        default=0,
+        min=0,
+    )
+    updater_interval_days: IntProperty(
+        name="Days",
+        description="Number of days between checking for updates",
+        default=7,
+        min=0,
+        max=31,
+    )
+    updater_interval_hours: IntProperty(
+        name="Hours",
+        description="Number of hours between checking for updates",
+        default=0,
+        min=0,
+        max=23,
+    )
+    updater_interval_minutes: IntProperty(
+        name="Minutes",
+        description="Number of minutes between checking for updates",
+        default=0,
+        min=0,
+        max=59,
     )
 
     def draw(self, context):
