@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Shapekeys **",
     "author": "CamsAvis",
-    "version": (2, 0, 0),
+    "version": (2, 1, 0),
     "blender": (5, 1, 0),
     "location": "Properties > Object Data > Shapekeys **",
     "description": (
@@ -15,6 +15,8 @@ import hashlib
 import re
 import time
 import bpy
+
+from . import addon_updater_ops
 from bpy.app.handlers import persistent
 from bpy.props import (
     BoolProperty,
@@ -190,6 +192,8 @@ class SHAPEKEYFOLDER_AP_prefs(AddonPreferences):
         row = col.row()
         row.enabled = self.search_debounce_enabled
         row.prop(self, "search_debounce_ms")
+        col.separator()
+        addon_updater_ops.update_settings_ui(self, context)
 
 
 def _get_prefs(context):
@@ -1013,6 +1017,8 @@ class SHAPEKEYFOLDER_PT_panel(Panel):
 
         SHAPEKEYFOLDER_UL_keys._nonzero_folders = _compute_nonzero_folders(obj, prefs)
 
+        addon_updater_ops.update_notice_box_ui(self, context)
+
         search_row = self.layout.row(align=True)
         search_row.label(text="", icon='VIEWZOOM')
         search_row.prop(obj, "shape_key_search", text="")
@@ -1162,6 +1168,7 @@ def _on_search_regex_change(self, _context):
 
 
 def register():
+    addon_updater_ops.register(bl_info)
     for cls in CLASSES:
         bpy.utils.register_class(cls)
     bpy.types.Object.shape_key_folder_states = CollectionProperty(
@@ -1191,6 +1198,7 @@ def register():
 
 
 def unregister():
+    addon_updater_ops.unregister()
     try:
         bpy.types.UI_MT_button_context_menu.remove(_row_context_menu_draw)
     except (AttributeError, ValueError):

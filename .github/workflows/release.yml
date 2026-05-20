@@ -44,10 +44,20 @@ jobs:
 
       - name: Package addon into Blender-installable zip
         run: |
-          mkdir -p staging/shape_key_folders
-          cp shape_key_folders.py staging/shape_key_folders/__init__.py
-          (cd staging && zip -r ../shape_key_folders.zip shape_key_folders/)
+          test -f shape_key_folders/__init__.py
+          zip -r shape_key_folders.zip shape_key_folders/ \
+            -x 'shape_key_folders/__pycache__/*' \
+            -x 'shape_key_folders/**/__pycache__/*' \
+            -x 'shape_key_folders/*.pyc'
           unzip -l shape_key_folders.zip
+
+      - name: Verify zip contains updater files
+        run: |
+          set -e
+          unzip -l shape_key_folders.zip | grep -q 'shape_key_folders/__init__.py'
+          unzip -l shape_key_folders.zip | grep -q 'shape_key_folders/addon_updater.py'
+          unzip -l shape_key_folders.zip | grep -q 'shape_key_folders/addon_updater_ops.py'
+          echo "All updater files present in zip."
 
       - name: Create release with zip attached
         uses: softprops/action-gh-release@v2

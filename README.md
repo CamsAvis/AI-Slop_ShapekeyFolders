@@ -2,9 +2,9 @@
 
 Blender 5.1+ addon that adds a folder-tree view of shape keys above the native *Shape Keys* panel in Properties > Object Data.
 
-![Panel screenshot](docs/demo-1.png)
+![Panel screenshot](.github/assets/demo-1.png)
 
-![Workflow demo](docs/demo-2.gif)
+![Workflow demo](.github/assets/demo-2.gif)
 
 ## Features
 
@@ -22,6 +22,8 @@ Blender 5.1+ addon that adds a folder-tree view of shape keys above the native *
 
 ## Install
 
-1. Download `shape_key_folders.py`
-2. Blender → Edit → Preferences → Add-ons → Install... → pick the file
-3. Enable "Shapekeys \*\*"
+1. Download `shape_key_folders.zip` from the [latest release](https://github.com/CamsAvis/AI-Slop_ShapekeyFolders/releases/tag/latest-main).
+2. Blender → Edit → Preferences → Add-ons → Install... → pick the zip.
+3. Enable "Shapekeys \*\*".
+
+Future updates are handled in-app: open the addon's preferences and use **Check now for shape_key_folders update**, or enable auto-check at startup.

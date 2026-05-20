@@ -5,3 +5,9 @@ __pycache__/
 *.blend@
 .vscode/
 .idea/
+
+# Local build artifacts
+shape_key_folders.zip
+smoke_test_updater.py
+shape_key_folders/shape_key_folders_updater/
+
